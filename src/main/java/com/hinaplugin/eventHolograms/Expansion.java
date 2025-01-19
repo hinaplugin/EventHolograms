@@ -57,9 +57,10 @@ public class Expansion extends PlaceholderExpansion {
             }
 
             final List<String> eventsName = Lists.newArrayList();
+            final String filter = EventHolograms.config.getString("filter", "").isEmpty() ? null : EventHolograms.config.getString("filter", "");
             boolean color = true;
             for (final ScheduledEvent event : events){
-                if (event.getName().contains("マイクラ")){
+                if (filter == null) {
                     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                     String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
                     if (color){
@@ -68,6 +69,17 @@ public class Expansion extends PlaceholderExpansion {
                     }else {
                         eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
                     }
+                }else {
+                    if (event.getName().contains(filter)){
+                        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
+                        String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
+                        if (color){
+                            eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
+                            color = false;
+                        }else {
+                            eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
+                        }
+                    }
                 }
             }
             eventsName.add("&l&9詳しくはDiscordをチェック!");
@@ -75,6 +87,4 @@ public class Expansion extends PlaceholderExpansion {
         }
         return null;
     }
-
-
 }
