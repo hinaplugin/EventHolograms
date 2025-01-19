@@ -1,0 +1,8 @@
+name: EventHolograms
+version: '1.20.4'
+main: com.hinaplugin.eventHolograms.EventHolograms
+api-version: '1.20'
+authors: [ hina2113 ]
+description: Discordのイベントをホログラムで出す
+depend:
+  - PlaceholderAPI
