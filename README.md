@@ -1,0 +1,2 @@
+# EventHolograms
+DiscordのイベントをMinecraftのホログラムに表示する
