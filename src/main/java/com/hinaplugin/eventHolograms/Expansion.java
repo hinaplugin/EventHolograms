@@ -59,6 +59,9 @@ public class Expansion extends PlaceholderExpansion {
             final List<String> eventsName = Lists.newArrayList();
             final String filter = EventHolograms.config.getString("filter", "").isEmpty() ? null : EventHolograms.config.getString("filter", "");
             boolean color = true;
+            if (!EventHolograms.config.getString("title", "").isEmpty()){
+                eventsName.add(EventHolograms.config.getString("title", ""));
+            }
             for (final ScheduledEvent event : events){
                 if (filter == null) {
                     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
@@ -82,7 +85,9 @@ public class Expansion extends PlaceholderExpansion {
                     }
                 }
             }
-            eventsName.add("&l&9詳しくはDiscordをチェック!");
+            if (!EventHolograms.config.getString("footer", "").isEmpty()){
+                eventsName.add(EventHolograms.config.getString("footer", ""));
+            }
             return String.join("\n", eventsName);
         }
         return null;
