@@ -57,7 +57,7 @@ public class Expansion extends PlaceholderExpansion {
             }
 
             final List<String> eventsName = Lists.newArrayList();
-            final String filter = EventHolograms.config.getString("filter", "").isEmpty() ? null : EventHolograms.config.getString("filter", "");
+            final List<String> filter = EventHolograms.config.getStringList("filter").isEmpty() ? null : EventHolograms.config.getStringList("filter");
             boolean color = true;
             if (!EventHolograms.config.getString("title", "").isEmpty()){
                 eventsName.add(EventHolograms.config.getString("title", ""));
@@ -67,20 +67,22 @@ public class Expansion extends PlaceholderExpansion {
                     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                     String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
                     if (color){
-                        eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
+                        eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                         color = false;
                     }else {
-                        eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
+                        eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                     }
                 }else {
-                    if (event.getName().contains(filter)){
-                        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
-                        String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                        if (color){
-                            eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
-                            color = false;
-                        }else {
-                            eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName().split("マイクラ ")[1]);
+                    for (final String key : filter){
+                        if (event.getName().startsWith(key)){
+                            final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
+                            String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
+                            if (color){
+                                eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                                color = false;
+                            }else {
+                                eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                            }
                         }
                     }
                 }
