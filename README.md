@@ -12,7 +12,7 @@ DiscordのイベントをMinecraftのホログラムに表示する
 ```
 token: "" //Discord Botのトークン
 server-id: "" //イベントを取得するDiscordサーバーのID
-filter: "" //表示するイベントを絞り込む
+filter: [] //表示するイベントを絞り込む
 title: "" //ホログラムの1行目に表示するタイトル
 footer: "" //ホログラムの最終行に表示するフッター
 ```
