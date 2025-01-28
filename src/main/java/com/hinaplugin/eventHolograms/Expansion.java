@@ -58,7 +58,6 @@ public class Expansion extends PlaceholderExpansion {
 
             final List<String> eventsName = Lists.newArrayList();
             final List<String> filter = EventHolograms.config.getStringList("filter").isEmpty() ? null : EventHolograms.config.getStringList("filter");
-            boolean color = true;
             if (!EventHolograms.config.getString("title", "").isEmpty()){
                 eventsName.add(EventHolograms.config.getString("title", ""));
             }
@@ -66,22 +65,20 @@ public class Expansion extends PlaceholderExpansion {
                 if (filter == null) {
                     final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                     String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                    if (color){
-                        eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                        color = false;
+                    if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
+                        eventsName.add("&l&d" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                     }else {
-                        eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                        eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                     }
                 }else {
                     for (final String key : filter){
                         if (event.getName().startsWith(key)){
                             final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                             String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                            if (color){
-                                eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                                color = false;
+                            if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
+                                eventsName.add("&l&d" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                             }else {
-                                eventsName.add(event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                                eventsName.add("&l&a" + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                             }
                         }
                     }
