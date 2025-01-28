@@ -3,3 +3,5 @@ server-id: ""
 filter: []
 title: ""
 footer: ""
+event-color: "&l&a"
+start-color: "&l&d"
