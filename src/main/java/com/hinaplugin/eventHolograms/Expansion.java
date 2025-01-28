@@ -52,9 +52,6 @@ public class Expansion extends PlaceholderExpansion {
             }
 
             final List<ScheduledEvent> events = guild.getScheduledEvents();
-            if (events.isEmpty()){
-                return null;
-            }
 
             final List<String> eventsName = Lists.newArrayList();
             final List<String> filter = EventHolograms.config.getStringList("filter").isEmpty() ? null : EventHolograms.config.getStringList("filter");
@@ -65,29 +62,34 @@ public class Expansion extends PlaceholderExpansion {
             final String eventColor = EventHolograms.config.getString("event-color", "&l&a");
             final String startColor = EventHolograms.config.getString("start-color", "&l&d");
 
-            for (final ScheduledEvent event : events){
-                if (filter == null) {
-                    final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
-                    String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                    if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
-                        eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+            if (events.isEmpty()){
+                eventsName.add(eventColor + "現在登録されているイベントはありません．");
+            }else {
+                for (final ScheduledEvent event : events){
+                    if (filter == null) {
+                        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
+                        String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
+                        if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
+                            eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                        }else {
+                            eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                        }
                     }else {
-                        eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                    }
-                }else {
-                    for (final String key : filter){
-                        if (event.getName().startsWith(key)){
-                            final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
-                            String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                            if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
-                                eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                            }else {
-                                eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                        for (final String key : filter){
+                            if (event.getName().startsWith(key)){
+                                final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
+                                String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
+                                if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
+                                    eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                                }else {
+                                    eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
+                                }
                             }
                         }
                     }
                 }
             }
+
             if (!EventHolograms.config.getString("footer", "").isEmpty()){
                 eventsName.add(EventHolograms.config.getString("footer", ""));
             }
