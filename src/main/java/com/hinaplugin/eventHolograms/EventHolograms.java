@@ -3,7 +3,6 @@ package com.hinaplugin.eventHolograms;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +13,7 @@ public final class EventHolograms extends JavaPlugin {
     public static EventHolograms plugin;
     public static FileConfiguration config;
     private JDA jda;
+    private Expansion expansion;
 
     @Override
     public void onEnable() {
@@ -32,17 +32,15 @@ public final class EventHolograms extends JavaPlugin {
             }
 
             jda = JDABuilder.createDefault(token)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setAutoReconnect(true)
                     .setEnableShutdownHook(false)
-                    .enableCache(CacheFlag.MEMBER_OVERRIDES)
-                    .enableIntents(GatewayIntent.GUILD_MESSAGES)
-                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                    .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                    .enableCache(CacheFlag.SCHEDULED_EVENTS)
+                    .enableIntents(GatewayIntent.SCHEDULED_EVENTS)
                     .build()
                     .awaitReady();
 
-            new Expansion().register();
+            expansion = new Expansion();
+            expansion.register();
         }catch (Exception exception){
             this.getLogger().severe(exception.getMessage());
         }
@@ -51,8 +49,15 @@ public final class EventHolograms extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if (expansion != null){
+            expansion.unregister();
+        }
         if (jda != null){
-            jda.shutdownNow();
+            jda.shutdown();
+            try {
+                jda.awaitShutdown();
+            }catch (Exception ignored){
+            }
         }
     }
 
