@@ -52,20 +52,22 @@ public class Expansion extends PlaceholderExpansion {
             }
 
             final List<ScheduledEvent> events = guild.getScheduledEvents();
-
             final List<String> eventsName = Lists.newArrayList();
             final List<String> filter = EventHolograms.config.getStringList("filter").isEmpty() ? null : EventHolograms.config.getStringList("filter");
             if (!EventHolograms.config.getString("title", "").isEmpty()){
                 eventsName.add(EventHolograms.config.getString("title", ""));
             }
 
-            final String eventColor = EventHolograms.config.getString("event-color", "&l&a");
-            final String startColor = EventHolograms.config.getString("start-color", "&l&d");
+            final String eventColor = EventHolograms.config.getString("event-color", "&a&l");
+            final String startColor = EventHolograms.config.getString("start-color", "&d&l");
 
             if (events.isEmpty()){
-                eventsName.add(eventColor + "現在登録されているイベントはありません．");
+                eventsName.add(eventColor + EventHolograms.config.getString("no-events", ""));
             }else {
                 for (final ScheduledEvent event : events){
+                    if (event.getStatus().equals(ScheduledEvent.Status.COMPLETED)){
+                        continue;
+                    }
                     if (filter == null) {
                         final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                         String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
