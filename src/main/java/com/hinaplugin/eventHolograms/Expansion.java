@@ -43,17 +43,17 @@ public class Expansion extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("list")){
             final String guildId = EventHolograms.config.getString("server-id");
             if (guildId == null){
-                return null;
+                return "&cDiscordサーバーのIDを設定してください．";
             }
 
             final Guild guild = EventHolograms.plugin.getJda().getGuildById(guildId);
             if (guild == null){
-                return null;
+                return "&cDiscordサーバーを取得できませんでした．";
             }
 
             final List<ScheduledEvent> events = guild.getScheduledEvents();
             final List<String> eventsName = Lists.newArrayList();
-            final List<String> filter = EventHolograms.config.getStringList("filter").isEmpty() ? null : EventHolograms.config.getStringList("filter");
+            final List<String> filter = EventHolograms.config.getStringList("filter");
             if (!EventHolograms.config.getString("title", "").isEmpty()){
                 eventsName.add(EventHolograms.config.getString("title", ""));
             }
@@ -64,28 +64,21 @@ public class Expansion extends PlaceholderExpansion {
             if (events.isEmpty()){
                 eventsName.add(eventColor + EventHolograms.config.getString("no-events", ""));
             }else {
+                final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
                 for (final ScheduledEvent event : events){
                     if (event.getStatus().equals(ScheduledEvent.Status.COMPLETED)){
                         continue;
                     }
-                    if (filter == null) {
-                        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
-                        String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                        if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
-                            eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                        }else {
-                            eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                        }
+
+                    final String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
+                    final String color = event.getStatus().equals(ScheduledEvent.Status.ACTIVE) ? startColor : eventColor;
+
+                    if (filter.isEmpty()) {
+                        eventsName.add(color + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                     }else {
                         for (final String key : filter){
                             if (event.getName().startsWith(key)){
-                                final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd");
-                                String dayOfWeek = event.getStartTime().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.JAPANESE);
-                                if (event.getStatus().equals(ScheduledEvent.Status.ACTIVE)){
-                                    eventsName.add(startColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                                }else {
-                                    eventsName.add(eventColor + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
-                                }
+                                eventsName.add(color + event.getStartTime().format(dateTimeFormatter) + " (" + dayOfWeek + ") " + event.getName());
                             }
                         }
                     }
@@ -97,6 +90,6 @@ public class Expansion extends PlaceholderExpansion {
             }
             return String.join("\n", eventsName);
         }
-        return null;
+        return "&c不明なパラメーターです．";
     }
 }
