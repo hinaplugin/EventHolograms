@@ -6,3 +6,11 @@ authors: [ hina2113 ]
 description: Discordのイベントをホログラムで出す
 depend:
   - PlaceholderAPI
+
+commands:
+  eventreload:
+    permission: eventholograms.commands.reload
+
+permissions:
+  eventholograms.commands.reload:
+    default: op
