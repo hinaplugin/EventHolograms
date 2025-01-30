@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,6 +42,11 @@ public final class EventHolograms extends JavaPlugin {
 
             expansion = new Expansion();
             expansion.register();
+
+            final PluginCommand command = this.getCommand("eventreload");
+            if (command != null){
+                command.setExecutor(new Commands());
+            }
         }catch (Exception exception){
             this.getLogger().severe(exception.getMessage());
         }
